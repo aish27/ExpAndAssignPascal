@@ -323,6 +323,26 @@ public class ExpressionParser extends StatementParser
 
                 break;
             }
+            case LEFT_BRACKET: {
+                System.out.println("Found set assignment");
+    
+            rootNode = ICodeFactory.createICodeNode(SETS);
+      
+            
+            while(token.getType()!=RIGHT_BRACKET){
+                
+                if(token.getType()==INTEGER){
+                    rootNode.addChild(parseFactor(token));
+                    token=currentToken();
+                }else{
+                    token= nextToken();// consume next token
+                }
+                
+            }
+            token= nextToken();// consume right bracket
+            
+            break;
+            }
 
             default: {
                 errorHandler.flag(token, UNEXPECTED_TOKEN, this);
