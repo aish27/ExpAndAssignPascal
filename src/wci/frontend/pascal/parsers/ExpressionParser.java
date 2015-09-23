@@ -53,7 +53,7 @@ public class ExpressionParser extends StatementParser
     // Set of relational operators.
     private static final EnumSet<PascalTokenType> REL_OPS =
         EnumSet.of(EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS,
-                   GREATER_THAN, GREATER_EQUALS);
+                   GREATER_THAN, GREATER_EQUALS,IN);
 
     // Map relational operator tokens to node types.
     private static final HashMap<PascalTokenType, ICodeNodeType>
@@ -65,6 +65,8 @@ public class ExpressionParser extends StatementParser
         REL_OPS_MAP.put(LESS_EQUALS, LE);
         REL_OPS_MAP.put(GREATER_THAN, GT);
         REL_OPS_MAP.put(GREATER_EQUALS, GE);
+        REL_OPS_MAP.put(IN,IN_NODE);
+        
     };
 
     /**
@@ -324,24 +326,9 @@ public class ExpressionParser extends StatementParser
                 break;
             }
             case LEFT_BRACKET: {
-                System.out.println("Found set assignment");
-    
-            rootNode = ICodeFactory.createICodeNode(SETS);
-      
+                rootNode=parseSet(token);
             
-            while(token.getType()!=RIGHT_BRACKET){
-                
-                if(token.getType()==INTEGER){
-                    rootNode.addChild(parseFactor(token));
-                    token=currentToken();
-                }else{
-                    token= nextToken();// consume next token
-                }
-                
-            }
-            token= nextToken();// consume right bracket
-            
-            break;
+                break;
             }
 
             default: {
@@ -351,5 +338,59 @@ public class ExpressionParser extends StatementParser
         }
 
         return rootNode;
+    }
+      /**
+     * Parse a set.
+     * @param token the initial token.
+     * @return the root of the generated parse subtree.
+     * @throws Exception if an error occurred.
+     */
+    private ICodeNode parseSet(Token token)
+        throws Exception
+    {
+         System.out.println("Found set");
+    
+            ICodeNode rootNode = ICodeFactory.createICodeNode(SETS);
+            int tempInteger=0;
+            token=nextToken();// consume left bracket
+
+            while(token.getType()!=RIGHT_BRACKET){
+                
+                if(token.getType()==INTEGER){
+                    tempInteger=(int)token.getValue();
+                    rootNode.addChild(parseFactor(token));
+                    token=currentToken();
+                }else if(token.getType()==IDENTIFIER){
+                    ICodeNode var=parseFactor(token);
+                    rootNode.addChild(var);
+                    token= currentToken();
+                }
+                if(token.getType()==COMMA){        
+                    token= nextToken();// consume next token
+                    if(token.getType()==COMMA){
+                        errorHandler.flag(token, EXTRA_COMMA, this);
+                    }
+                }else if(token.getType()==RIGHT_BRACKET){//do nothing
+                }else if(token.getType()==SEMICOLON){
+                    errorHandler.flag(token, MISSING_CLOSE_SQUARE_BRACKET, this);
+                    break;
+                }else if(token.getType()==DOT_DOT){
+                    token=nextToken();// consume dot dot
+                    // Create a STRING_CONSTANT node as the root node.
+                    ICodeNode node = ICodeFactory.createICodeNode(SUBRANGE);
+                    rootNode.addChild(node);
+                    token=currentToken();
+                    
+                }    
+                else{
+                    errorHandler.flag(token, MISSING_COMMA, this);
+                }
+                
+                
+            }
+            if(token.getType()!=SEMICOLON){
+                token= nextToken();// consume right bracket
+            }
+            return rootNode;
     }
 }

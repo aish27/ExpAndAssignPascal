@@ -16,7 +16,7 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     PROGRAM, PROCEDURE, FUNCTION,
 
     // Sets
-    SETS,
+    SETS,SUBRANGE,IN_NODE,
     // Statements
     COMPOUND, ASSIGN, LOOP, TEST, CALL, PARAMETERS,
     IF, SELECT, SELECT_BRANCH, SELECT_CONSTANTS, NO_OP,
