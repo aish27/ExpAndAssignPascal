@@ -56,6 +56,7 @@ public enum PascalErrorCode
     MISSING_TO_DOWNTO("Missing TO or DOWNTO"),
     MISSING_UNTIL("Missing UNTIL"),
     MISSING_VARIABLE("Missing variable"),
+    MISSING_MAX_VAL_SUBRANGE("Missing the maximum value in the subrange"),
     NOT_CONSTANT_IDENTIFIER("Not a constant identifier"),
     NOT_RECORD_VARIABLE("Not a record variable"),
     NOT_TYPE_IDENTIFIER("Not a type identifier"),
