@@ -347,9 +347,7 @@ public class ExpressionParser extends StatementParser
      */
     private ICodeNode parseSet(Token token)
         throws Exception
-    {
-         System.out.println("Found set");
-    
+    {   
             ICodeNode rootNode = ICodeFactory.createICodeNode(SETS);
             int tempInteger=0;
             token=nextToken();// consume left bracket
@@ -358,7 +356,7 @@ public class ExpressionParser extends StatementParser
                 
                 if(token.getType()==INTEGER){
                     tempInteger=(int)token.getValue();
-                    rootNode.addChild(parseFactor(token));
+                      rootNode.addChild(parseTerm(token));
                     token=currentToken();
                 }else if(token.getType()==IDENTIFIER){
                     ICodeNode var=parseFactor(token);
@@ -375,11 +373,14 @@ public class ExpressionParser extends StatementParser
                     errorHandler.flag(token, MISSING_CLOSE_SQUARE_BRACKET, this);
                     break;
                 }else if(token.getType()==DOT_DOT){
-                    token=nextToken();// consume dot dot
+                    token=nextToken();// consume the integer.
                     // Create a STRING_CONSTANT node as the root node.
                     ICodeNode node = ICodeFactory.createICodeNode(SUBRANGE);
+                    //denotes the maximum value of the range.
+                    int value = (int) token.getValue();
+                    node.setAttribute(VALUE, value);
                     rootNode.addChild(node);
-                    token=currentToken();
+                    token=nextToken();
                     
                 }    
                 else{

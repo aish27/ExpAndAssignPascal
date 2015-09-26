@@ -9,7 +9,6 @@ BEGIN
     teens  := [13..19];
 
     s1 := evens*odds;
-    s2 := evens - teens + [high, mid..47, 2*low];
     s3 := evens*primes + teens;
     s4 := s3 - odds;
     s5 := evens + odds + primes + teens;
