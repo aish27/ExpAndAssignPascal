@@ -64,7 +64,7 @@ public class Pascal
                     treePrinter.print(iCode);
                 }
 
-//                backend.process(iCode, symTabStack);
+                backend.process(iCode, symTabStack);
             }
         }
         catch (Exception ex) {
